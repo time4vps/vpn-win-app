@@ -1,0 +1,55 @@
+;
+; T4VPN.SplitTunnelDriver.inf
+;
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = WFPCALLOUTS
+ClassGuid   = {57465043-616C-6C6F-7574-5F636C617373}
+Provider    = %ManufacturerName%
+CatalogFile = T4VPN.SplitTunnelDriver.cat
+DriverVer   = 07/23/2020,1.0.3.0
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+T4VPN.SplitTunnelDriver.sys = 1,,
+
+[DestinationDirs]
+DefaultDestDir                    = 12         ; %WinDir%\System32\Drivers
+T4VPN.SplitTunnelDriver.Files = 12         ; %WinDir%\System32\Drivers
+
+[DefaultInstall.NT$ARCH$]
+OptionDesc = %ServiceDescription%
+CopyFiles  = T4VPN.SplitTunnelDriver.Files
+
+[DefaultUninstall.NT$ARCH$]
+LegacyUninstall = 1
+DelFiles = T4VPN.SplitTunnelDriver.Files
+
+[DefaultInstall.NT$ARCH$.Services]
+AddService = %ServiceName%,,T4VPN.SplitTunnelDriver.Service
+
+[DefaultUninstall.NT$ARCH$.Services]
+DelService = %ServiceName%,0x200               ; SPSVCINST_STOPSERVICE
+
+[T4VPN.SplitTunnelDriver.Files]
+T4VPN.SplitTunnelDriver.sys,,,0x00000040   ; COPYFLG_OVERWRITE_OLDER_ONLY
+
+[T4VPN.SplitTunnelDriver.Service]
+DisplayName    = %ServiceDisplayName%
+Description    = %ServiceDescription%
+ServiceType    = 1                             ; SERVICE_KERNEL_DRIVER
+StartType      = 3                             ; SERVICE_DEMAND_START
+ErrorControl   = 1                             ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\T4VPN.SplitTunnelDriver.sys
+LoadOrderGroup = NDIS
+Dependencies   = TCPIP                         ; Load after TCPIP.sys
+
+[Strings]
+ManufacturerName   = "Time4VPS"
+DiskName           = "Time4VPS VPN Split Tunnel Driver Installation Disk"
+ServiceName        = "Time4VPS VPN SplitTunnel"
+ServiceDisplayName = "Time4VPS VPN Split Tunnel"
+ServiceDescription = "Time4VPS VPN Split Tunnel Driver"
